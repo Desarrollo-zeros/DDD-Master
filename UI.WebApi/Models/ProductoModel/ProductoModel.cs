@@ -24,11 +24,6 @@ namespace UI.WebApi.Models.ProductoModel
             }
         }
 
-
-   
-
-        
-
         public IEnumerable<Producto> ProductosTop(int top)
         {
             return (

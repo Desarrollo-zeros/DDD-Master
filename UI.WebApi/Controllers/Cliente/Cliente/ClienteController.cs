@@ -1,5 +1,7 @@
 ﻿using Application.Base;
 using Application.Implements.Cliente.ServicioCliente;
+using Application.Implements.Cliente.ServicioUsuario;
+using Domain.Enum;
 using Domain.Factories;
 using System;
 using System.Linq;
@@ -38,7 +40,22 @@ namespace UI.WebApi.Controllers.Cliente.Cliente
                 return Json(Mensaje<Domain.Entities.Cliente.Cliente>.MensajeJson(Constants.IS_ERROR, "Objecto no puede estar vacio", Constants.CLIENT_FAIL));
             }
 
-            var FactoryCliente = BuilderFactories.Cliente(clienteModel.Cliente.Documento, clienteModel.Cliente.Nombre, clienteModel.Cliente.Email, usuario.id);
+            if (clienteModel.Cliente.Usuario == null)
+            {
+                return Json(Mensaje<Domain.Entities.Cliente.Usuario>.MensajeJson(Constants.IS_ERROR, "Objecto no puede estar vacio", Constants.USER_FAIL));
+            }
+
+
+            var factoryUser = BuilderFactories.Usuario(clienteModel.Cliente.Usuario.Username, clienteModel.Cliente.Usuario.Password, true, Rol.INVITADO);
+            var responseUsuario = usuario.ServicioUsuario.Create(new ServicioUsuarioRequest { Username = factoryUser.Username, Password = factoryUser.Password, Rol = Rol.CLIENTE, Activo = true });
+
+            if (!responseUsuario.Status)
+            {
+                return Json(Mensaje<Domain.Entities.Cliente.Usuario>.MensajeJson(Constants.IS_ERROR, responseUsuario.Mensaje, Constants.USER_FAIL));
+
+            }
+
+            var FactoryCliente = BuilderFactories.Cliente(clienteModel.Cliente.Documento, clienteModel.Cliente.Nombre, clienteModel.Cliente.Email, responseUsuario.Id);
             var responseCliente = clienteModel.ServicioCliente.Create(new ServicioClienteRequest()
             {
                 Documento = FactoryCliente.Documento,

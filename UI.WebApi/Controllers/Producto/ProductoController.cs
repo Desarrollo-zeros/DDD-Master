@@ -642,5 +642,13 @@ namespace UI.WebApi.Controllers.Producto
             return Json(ProductoDescuentoModel.Instance);
         }
 
+
+        [HttpGet]
+        [Route("test/{id}")]
+        public IHttpActionResult Test(int id)
+        {
+            return Json(ProductoModel.Instance.Find(id));
+        }
+
     }
 }
