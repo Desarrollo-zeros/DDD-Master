@@ -10,7 +10,7 @@ namespace UI.WebApi.Singleton
 
        private static readonly Lazy<IDbContext> _db =
             new Lazy<IDbContext>(() => new DBContext());
-        public static IDbContext Instance_db => new DBContext();
+        public static IDbContext Instance_db => _db.Value;
     }
 
 }

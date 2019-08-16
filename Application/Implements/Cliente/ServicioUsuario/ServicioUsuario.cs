@@ -13,7 +13,6 @@ namespace Application.Implements.Cliente.ServicioUsuario
         readonly IUnitOfWork _unitOfWork;
         
         
-
         public ServicioUsuario(IUnitOfWork unitOfWork, IGenericRepository<Usuario> repository) : base(unitOfWork, repository)
         {
             _unitOfWork = unitOfWork;
@@ -23,7 +22,7 @@ namespace Application.Implements.Cliente.ServicioUsuario
         
         public ServiceResponse Create(ServicioUsuarioRequest request)
         {
-            var usuario = Get(request);
+            var usuario = _repository.FindBy(x=>x.Username == request.Username).FirstOrDefault();
             if(usuario == null)
             {
                 var buildUser = BuilderFactories.Usuario(request.Username, request.Password, request.Activo, request.Rol);
@@ -69,14 +68,11 @@ namespace Application.Implements.Cliente.ServicioUsuario
             {
                 return _repository.FindBy(x => x.Id == request.Id).FirstOrDefault();
             }
-            else if (request.Username != null)
+            if (request.Username != null)
             {
                 return _repository.FindBy(x => x.Username == request.Username).FirstOrDefault();
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
     }

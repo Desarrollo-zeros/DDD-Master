@@ -24,10 +24,7 @@ namespace UI.WebApi.Controllers.Cliente.Cliente
         public ClienteController()
         {
             usuario = new UsuarioModel();
-            if (usuario.id == 0)
-            {
-                throw new ArgumentException(Constants.NO_AUTH);
-            }
+           
         }
 
 
@@ -45,9 +42,8 @@ namespace UI.WebApi.Controllers.Cliente.Cliente
                 return Json(Mensaje<Domain.Entities.Cliente.Usuario>.MensajeJson(Constants.IS_ERROR, "Objecto no puede estar vacio", Constants.USER_FAIL));
             }
 
-
             var factoryUser = BuilderFactories.Usuario(clienteModel.Cliente.Usuario.Username, clienteModel.Cliente.Usuario.Password, true, Rol.INVITADO);
-            var responseUsuario = usuario.ServicioUsuario.Create(new ServicioUsuarioRequest { Username = factoryUser.Username, Password = factoryUser.Password, Rol = Rol.CLIENTE, Activo = true });
+            var responseUsuario = UsuarioModel.Instance.ServicioUsuario.Create(new ServicioUsuarioRequest { Username = factoryUser.Username, Password = factoryUser.Password, Rol = Rol.CLIENTE, Activo = true });
 
             if (!responseUsuario.Status)
             {
